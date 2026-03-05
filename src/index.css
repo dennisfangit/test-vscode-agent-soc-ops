@@ -2,16 +2,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 @theme {
-  --color-arcade-bg: #0a0e27;
-  --color-arcade-dark: #1a1f3a;
-  --color-neon-pink: #ff006e;
-  --color-neon-cyan: #00f5ff;
-  --color-neon-yellow: #fffd38;
-  --color-neon-purple: #b537f2;
-  --color-marked: #00f5ff;
-  --color-marked-border: #ff006e;
-  --color-bingo: #fffd38;
-  --color-accent: #ff006e;
+  --color-bg-dark: #1a1a2e;
+  --color-neon-cyan: #00ffff;
+  --color-neon-magenta: #ff00ff;
+  --color-neon-yellow: #ffff00;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #00ffff;
 }
 
 @layer base {
@@ -23,56 +19,50 @@
 
   body {
     margin: 0;
-    font-family: 'Press Start 2P', cursive;
-    background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #2d1b4e 100%);
-    color: #00f5ff;
+    font-family: 'Press Start 2P', monospace;
+    background-color: #1a1a2e;
+    color: #ffffff;
     -webkit-tap-highlight-color: transparent;
     overflow-x: hidden;
   }
 
-  /* Pixel-perfect pixel borders */
-  .pixel-border {
-    border: 4px solid;
-    border-image-slice: 1;
-    image-rendering: pixelated;
+  /* Arcade scanline effect */
+  .arcade-scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background-image: repeating-linear-gradient(
+      0deg,
+      rgba(255, 0, 255, 0.03) 0px,
+      rgba(255, 0, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+    z-index: -1;
   }
 
-  /* Neon glow effects */
+  /* Neon text glow */
   .neon-glow {
     text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
-    filter: drop-shadow(0 0 8px currentColor);
   }
 
-  .neon-pink { color: #ff006e; }
-  .neon-cyan { color: #00f5ff; }
-  .neon-yellow { color: #fffd38; }
-  .neon-purple { color: #b537f2; }
+  /* Pixel-perfect rendering */
+  .pixel-perfect {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
 
   /* Arcade button pulse animation */
   @keyframes arcade-pulse {
     0%, 100% {
-      box-shadow: 0 0 10px rgba(255, 0, 110, 0.6), inset 0 0 10px rgba(255, 0, 110, 0.3);
+      filter: brightness(1);
     }
     50% {
-      box-shadow: 0 0 20px rgba(255, 0, 110, 1), inset 0 0 15px rgba(255, 0, 110, 0.6);
-    }
-  }
-
-  @keyframes arcade-flicker {
-    0%, 18%, 22%, 25%, 54%, 56%, 100% {
-      opacity: 1;
-    }
-    19%, 24%, 55% {
-      opacity: 0.8;
-    }
-  }
-
-  @keyframes arcade-scan {
-    0% {
-      transform: translateY(-100%);
-    }
-    100% {
-      transform: translateY(100%);
+      filter: brightness(1.2);
     }
   }
 
@@ -82,34 +72,6 @@
     }
     50% {
       text-shadow: 0 0 20px currentColor, 0 0 40px currentColor, 0 0 60px currentColor;
-    }
-  }
-
-  /* CRT screen effect */
-  @keyframes crt-flicker {
-    0% {
-      text-shadow: -2px 0 #ff006e, 2px 0 #00f5ff;
-    }
-    20% {
-      text-shadow: -2px 0 #ff006e, 2px 0 #00f5ff;
-    }
-    21% {
-      text-shadow: 2px 0 #ff006e, -2px 0 #00f5ff;
-    }
-    40% {
-      text-shadow: 2px 0 #ff006e, -2px 0 #00f5ff;
-    }
-    41% {
-      text-shadow: -2px 0 #ff006e, 2px 0 #00f5ff;
-    }
-    60% {
-      text-shadow: -2px 0 #ff006e, 2px 0 #00f5ff;
-    }
-    61% {
-      text-shadow: 2px 0 #ff006e, -2px 0 #00f5ff;
-    }
-    100% {
-      text-shadow: 2px 0 #ff006e, -2px 0 #00f5ff;
     }
   }
 
@@ -124,8 +86,8 @@
     pointer-events: none;
     background: repeating-linear-gradient(
       0deg,
-      rgba(0, 0, 0, 0.15),
-      rgba(0, 0, 0, 0.15) 1px,
+      rgba(255, 0, 255, 0.02) 0px,
+      rgba(255, 0, 255, 0.02) 1px,
       transparent 1px,
       transparent 2px
     );

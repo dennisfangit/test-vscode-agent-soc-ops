@@ -38,7 +38,62 @@ Pure functions in [src/utils/bingoLogic.ts](src/utils/bingoLogic.ts): `generateB
 
 ### Styling & Theme
 
-Tailwind CSS v4 with custom theme in [src/index.css](src/index.css): `--color-accent` (#2563eb), `--color-marked` (#dcfce7), `--color-bingo` (#fbbf24). Use Tailwind classes; avoid hardcoding colors.
+Tailwind CSS v4 with custom theme in [src/index.css](src/index.css). Use Tailwind classes; avoid hardcoding colors.
+
+## Design Guide
+
+**Aesthetic**: 8-bit Neon Arcade Style — classic NES-inspired chunky pixel design with vibrant neon colors and bitmap typography.
+
+### Color Palette
+
+| Token | Color | Hex | Purpose |
+|-------|-------|-----|---------|
+| `--color-bg-dark` | Dark Navy | `#1a1a2e` | Main background (all screens) |
+| `--color-neon-cyan` | Neon Cyan | `#00ffff` | Primary accent, borders, text highlights |
+| `--color-neon-magenta` | Neon Magenta | `#ff00ff` | Secondary accent, marked states, buttons |
+| `--color-neon-yellow` | Neon Yellow | `#ffff00` | Success/marked squares, winning line accents |
+| `--color-text-primary` | White | `#ffffff` | Primary text on dark backgrounds |
+| `--color-text-secondary` | Neon Cyan | `#00ffff` | Secondary labels, instructions |
+
+**Usage**: All interactive elements use thick neon borders (`border-4` or `border-6`) on dark background. Text is white or cyan for contrast and retro feel.
+
+### Typography
+
+**Font**: Press Start 2P (Google Fonts) with monospace fallback — authentic 8-bit bitmap styling for all text.
+
+**Sizing**:
+- Titles: `text-4xl` or `text-5xl` (cyan)
+- Headings: `text-2xl` (magenta or cyan)
+- Body: `text-sm` or `text-base` (white)
+- Small labels: `text-xs` (cyan)
+
+**Weight**: Bold for all text to match chunky arcade aesthetic.
+
+### Component Styling Patterns
+
+**StartScreen**: Dark navy background, cyan title, magenta subtitle, thick cyan borders on cards, yellow accents on headings, chunky magenta button.
+
+**GameScreen**: Thick cyan/magenta header border, neon cyan instructions, magenta bingo banner with thick black border.
+
+**BingoBoard**: Grid with `gap-2` or `gap-3` for chunky visibility, thick neon border container, dark background.
+
+**BingoSquare States**:
+- **Unmarked**: dark bg, thick cyan border, white text
+- **Marked**: bright yellow bg, thick magenta border, dark text with checkmark
+- **FREE SPACE**: bright cyan bg, thick magenta border, magenta bold text
+- **Winning Line**: bright magenta bg, thick yellow border, white text, optional light pulse
+
+**BingoModal**: Dark background, thick cyan/magenta border, magenta/yellow "BINGO!" text, white congratulations.
+
+### Visual Effects
+
+- **Minimal animations**: Subtle fade/pulse on state changes (no elaborate sprites)
+- **Borders**: Thick, visible on all interactive elements (`border-4` or `border-6`)
+- **Padding**: Generous (`p-4`, `p-6`) for arcade cabinet spacing
+- **Gaps**: `gap-2` or `gap-3` for chunky grid appearance
+- **Transitions**: `transition-colors duration-150` for state changes
+
+---
 
 ## Developer Workflows
 
