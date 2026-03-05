@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import type { BingoSquareData, BingoLine, GameState } from '../types';
+import type { BingoSquareData, BingoLine, GameState, ScavengerHuntItem } from '../types';
 import {
   generateBoard,
   toggleSquare,
@@ -7,6 +7,8 @@ import {
   getWinningSquareIds,
 } from '../utils/bingoLogic';
 import { questions } from '../data/questions';
+import { loadGameState, saveGameState } from '../utils/gameStorage';
+import { useHuntState } from './useHuntState';
 
 export interface BingoGameState {
   gameState: GameState;
@@ -15,6 +17,9 @@ export interface BingoGameState {
   winningSquareIds: Set<number>;
   showBingoModal: boolean;
   currentCardIndex: number;
+  huntList: ScavengerHuntItem[];
+  huntProgress: number;
+  showHuntCompleteModal: boolean;
 }
 
 export interface BingoGameActions {
@@ -24,6 +29,9 @@ export interface BingoGameActions {
   dismissModal: () => void;
   startCardDeck: () => void;
   drawCard: () => void;
+  startScavengerHunt: () => void;
+  toggleHuntItem: (itemId: number) => void;
+  dismissHuntCompleteModal: () => void;
 }
 
 const STORAGE_KEY = 'bingo-game-state';
@@ -34,6 +42,7 @@ interface StoredGameData {
   gameState: GameState;
   board: BingoSquareData[];
   winningLine: BingoLine | null;
+  huntList: ScavengerHuntItem[];
 }
 
 function validateStoredData(data: unknown): data is StoredGameData {
@@ -47,7 +56,7 @@ function validateStoredData(data: unknown): data is StoredGameData {
     return false;
   }
   
-  if (typeof obj.gameState !== 'string' || !['start', 'playing', 'bingo', 'card-deck'].includes(obj.gameState)) {
+  if (typeof obj.gameState !== 'string' || !['start', 'playing', 'bingo', 'card-deck', 'scavenger-hunt', 'hunt-complete'].includes(obj.gameState)) {
     return false;
   }
   
@@ -84,11 +93,29 @@ function validateStoredData(data: unknown): data is StoredGameData {
       return false;
     }
   }
+
+  if (!Array.isArray(obj.huntList)) {
+    return false;
+  }
+
+  const validHuntItems = obj.huntList.every((item: unknown) => {
+    if (!item || typeof item !== 'object') return false;
+    const huntItem = item as Record<string, unknown>;
+    return (
+      typeof huntItem.id === 'number' &&
+      typeof huntItem.text === 'string' &&
+      typeof huntItem.isCompleted === 'boolean'
+    );
+  });
+
+  if (!validHuntItems) {
+    return false;
+  }
   
   return true;
 }
 
-function loadGameState(): Pick<BingoGameState, 'gameState' | 'board' | 'winningLine'> | null {
+function loadGameState(): Pick<BingoGameState, 'gameState' | 'board' | 'winningLine' | 'huntList'> | null {
   // SSR guard
   if (typeof window === 'undefined') {
     return null;
@@ -107,6 +134,7 @@ function loadGameState(): Pick<BingoGameState, 'gameState' | 'board' | 'winningL
         gameState: parsed.gameState,
         board: parsed.board,
         winningLine: parsed.winningLine,
+        huntList: parsed.huntList,
       };
     } else {
       console.warn('Invalid game state data in localStorage, clearing...');
@@ -122,7 +150,7 @@ function loadGameState(): Pick<BingoGameState, 'gameState' | 'board' | 'winningL
   return null;
 }
 
-function saveGameState(gameState: GameState, board: BingoSquareData[], winningLine: BingoLine | null): void {
+function saveGameState(gameState: GameState, board: BingoSquareData[], winningLine: BingoLine | null, huntList: ScavengerHuntItem[]): void {
   // SSR guard
   if (typeof window === 'undefined') {
     return;
@@ -134,6 +162,7 @@ function saveGameState(gameState: GameState, board: BingoSquareData[], winningLi
       gameState,
       board,
       winningLine,
+      huntList,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch (error) {
@@ -156,6 +185,19 @@ export function useBingoGame(): BingoGameState & BingoGameActions {
   const [showBingoModal, setShowBingoModal] = useState(false);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
+  const {
+    huntList,
+    huntProgress,
+    showHuntCompleteModal,
+    startScavengerHunt,
+    toggleHuntItem,
+    dismissHuntCompleteModal,
+    initializeHunt,
+    resetHunt,
+  } = useHuntState(() => {
+    setGameState('hunt-complete');
+  });
+
   const winningSquareIds = useMemo(
     () => getWinningSquareIds(winningLine),
     [winningLine]
@@ -163,8 +205,15 @@ export function useBingoGame(): BingoGameState & BingoGameActions {
 
   // Save game state to localStorage whenever it changes
   useEffect(() => {
-    saveGameState(gameState, board, winningLine);
-  }, [gameState, board, winningLine]);
+    saveGameState(gameState, board, winningLine, huntList);
+  }, [gameState, board, winningLine, huntList]);
+
+  // Initialize hunt from loaded state
+  useEffect(() => {
+    if (loadedState?.huntList && loadedState.huntList.length > 0) {
+      initializeHunt(loadedState.huntList);
+    }
+  }, []);
 
   const startGame = useCallback(() => {
     setBoard(generateBoard());
@@ -172,31 +221,33 @@ export function useBingoGame(): BingoGameState & BingoGameActions {
     setGameState('playing');
   }, []);
 
-  const handleSquareClick = useCallback((squareId: number) => {
-    setBoard((currentBoard) => {
-      const newBoard = toggleSquare(currentBoard, squareId);
-      
-      // Check for bingo after toggling
-      const bingo = checkBingo(newBoard);
-      if (bingo && !winningLine) {
-        // Schedule state updates to avoid synchronous setState in effect
-        queueMicrotask(() => {
-          setWinningLine(bingo);
-          setGameState('bingo');
-          setShowBingoModal(true);
-        });
-      }
-      
-      return newBoard;
-    });
-  }, [winningLine]);
+  const handleSquareClick = useCallback(
+    (squareId: number) => {
+      setBoard((currentBoard) => {
+        const newBoard = toggleSquare(currentBoard, squareId);
+        const bingo = checkBingo(newBoard);
+
+        if (bingo && !winningLine) {
+          queueMicrotask(() => {
+            setWinningLine(bingo);
+            setGameState('bingo');
+            setShowBingoModal(true);
+          });
+        }
+
+        return newBoard;
+      });
+    },
+    [winningLine]
+  );
 
   const resetGame = useCallback(() => {
     setGameState('start');
     setBoard([]);
     setWinningLine(null);
     setShowBingoModal(false);
-  }, []);
+    resetHunt();
+  }, [resetHunt]);
 
   const dismissModal = useCallback(() => {
     setShowBingoModal(false);
@@ -211,6 +262,16 @@ export function useBingoGame(): BingoGameState & BingoGameActions {
     setCurrentCardIndex((prev) => (prev + 1) % questions.length);
   }, []);
 
+  const handleStartScavengerHunt = useCallback(() => {
+    startScavengerHunt();
+    setGameState('scavenger-hunt');
+  }, [startScavengerHunt]);
+
+  const handleDismissHuntComplete = useCallback(() => {
+    dismissHuntCompleteModal();
+    setGameState('start');
+  }, [dismissHuntCompleteModal]);
+
   return {
     gameState,
     board,
@@ -218,10 +279,16 @@ export function useBingoGame(): BingoGameState & BingoGameActions {
     winningSquareIds,
     showBingoModal,
     currentCardIndex,
+    huntList,
+    huntProgress,
+    showHuntCompleteModal,
     startGame,
     handleSquareClick,
     resetGame,
     dismissModal,
+    startScavengerHunt: handleStartScavengerHunt,
+    toggleHuntItem,
+    dismissHuntCompleteModal: handleDismissHuntComplete,
     startCardDeck,
     drawCard,
   };

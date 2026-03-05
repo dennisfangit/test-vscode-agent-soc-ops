@@ -1,21 +1,59 @@
-import type { BingoSquareData } from '../types';
+import type { BingoSquareData, ScavengerHuntItem } from '../types';
 import { BingoBoard } from './BingoBoard';
+import { ScavengerHuntScreen } from './ScavengerHuntScreen';
+import { ScavengerHuntCompleteModal } from './ScavengerHuntCompleteModal';
+import { BingoModal } from './BingoModal';
 
 interface GameScreenProps {
+  gameState: string;
   board: BingoSquareData[];
+  winningLine: any;
   winningSquareIds: Set<number>;
-  hasBingo: boolean;
+  showBingoModal: boolean;
+  huntList: ScavengerHuntItem[];
+  huntProgress: number;
+  showHuntCompleteModal: boolean;
   onSquareClick: (squareId: number) => void;
   onReset: () => void;
+  onToggleHuntItem: (itemId: number) => void;
+  onDismissBingo: () => void;
+  onDismissHuntComplete: () => void;
 }
 
 export function GameScreen({
+  gameState,
   board,
+  winningLine,
   winningSquareIds,
-  hasBingo,
+  showBingoModal,
+  huntList,
+  huntProgress,
+  showHuntCompleteModal,
   onSquareClick,
   onReset,
+  onToggleHuntItem,
+  onDismissBingo,
+  onDismissHuntComplete,
 }: GameScreenProps) {
+  // Render scavenger hunt screen
+  if (gameState === 'scavenger-hunt' || gameState === 'hunt-complete') {
+    return (
+      <>
+        <ScavengerHuntScreen
+          huntList={huntList}
+          huntProgress={huntProgress}
+          onToggleItem={onToggleHuntItem}
+          onReset={onReset}
+        />
+        {showHuntCompleteModal && (
+          <ScavengerHuntCompleteModal onDismiss={onDismissHuntComplete} />
+        )}
+      </>
+    );
+  }
+
+  // Render bingo screen (default)
+  const hasBingo = gameState === 'bingo';
   return (
     <div className="flex flex-col min-h-full bg-bg-dark relative overflow-hidden">
       {/* Header with thick border */}
@@ -97,6 +135,9 @@ export function GameScreen({
           onSquareClick={onSquareClick}
         />
       </div>
+
+      {/* Bingo Modal */}
+      {showBingoModal && <BingoModal onDismiss={onDismissBingo} />}
     </div>
   );
 }

@@ -13,10 +13,16 @@ export interface BingoLine {
   squares: number[];
 }
 
-export type GameState = 'start' | 'playing' | 'bingo' | 'card-deck';
+export type GameState = 'start' | 'playing' | 'bingo' | 'card-deck' | 'scavenger-hunt' | 'hunt-complete';
 
 export interface CardDeckState {
   currentCardIndex: number;
   usedCards: Set<number>;
   cardHistory: number[];
+}
+
+export interface ScavengerHuntItem {
+  id: number;
+  text: string;
+  isCompleted: boolean;
 }

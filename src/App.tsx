@@ -8,19 +8,32 @@ function App() {
   const {
     gameState,
     board,
+    winningLine,
     winningSquareIds,
     showBingoModal,
     currentCardIndex,
+    huntList,
+    huntProgress,
+    showHuntCompleteModal,
     startGame,
+    startScavengerHunt,
     startCardDeck,
     drawCard,
     handleSquareClick,
+    toggleHuntItem,
     resetGame,
     dismissModal,
+    dismissHuntCompleteModal,
   } = useBingoGame();
 
   if (gameState === 'start') {
-    return <StartScreen onStartBingo={startGame} onStartCardDeck={startCardDeck} />;
+    return (
+      <StartScreen
+        onStartBingo={startGame}
+        onStartScavengerHunt={startScavengerHunt}
+        onStartCardDeck={startCardDeck}
+      />
+    );
   }
 
   if (gameState === 'card-deck') {
@@ -28,18 +41,21 @@ function App() {
   }
 
   return (
-    <>
-      <GameScreen
-        board={board}
-        winningSquareIds={winningSquareIds}
-        hasBingo={gameState === 'bingo'}
-        onSquareClick={handleSquareClick}
-        onReset={resetGame}
-      />
-      {showBingoModal && (
-        <BingoModal onDismiss={dismissModal} />
-      )}
-    </>
+    <GameScreen
+      gameState={gameState}
+      board={board}
+      winningLine={winningLine}
+      winningSquareIds={winningSquareIds}
+      showBingoModal={showBingoModal}
+      huntList={huntList}
+      huntProgress={huntProgress}
+      showHuntCompleteModal={showHuntCompleteModal}
+      onSquareClick={handleSquareClick}
+      onReset={resetGame}
+      onToggleHuntItem={toggleHuntItem}
+      onDismissBingo={dismissModal}
+      onDismissHuntComplete={dismissHuntCompleteModal}
+    />
   );
 }
 

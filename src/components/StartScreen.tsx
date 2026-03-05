@@ -2,10 +2,11 @@ import { useState } from 'react';
 
 interface StartScreenProps {
   onStartBingo: () => void;
+  onStartScavengerHunt: () => void;
   onStartCardDeck: () => void;
 }
 
-export function StartScreen({ onStartBingo, onStartCardDeck }: StartScreenProps) {
+export function StartScreen({ onStartBingo, onStartScavengerHunt, onStartCardDeck }: StartScreenProps) {
   const [rulesExpanded, setRulesExpanded] = useState(false);
   const [flavorVisible, setFlavorVisible] = useState(false);
 
@@ -80,17 +81,24 @@ export function StartScreen({ onStartBingo, onStartCardDeck }: StartScreenProps)
         </div>
 
         {/* ── Play Buttons ── */}
-        <div className="flex gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <button
             onClick={onStartBingo}
-            className="flex-1 font-bold py-4 px-6 text-lg md:text-xl active:scale-95 transition-all duration-150 uppercase border-4 text-bg-dark bg-neon-magenta border-neon-yellow neon-play-button min-h-[44px]"
+            className="font-bold py-4 px-6 text-lg md:text-xl active:scale-95 transition-all duration-150 uppercase border-4 text-bg-dark bg-neon-magenta border-neon-yellow neon-play-button min-h-[44px]"
             aria-label="Start Bingo game"
           >
             ▶ BINGO ◀
           </button>
           <button
+            onClick={onStartScavengerHunt}
+            className="font-bold py-4 px-6 text-lg md:text-xl active:scale-95 transition-all duration-150 uppercase border-4 text-neon-yellow bg-transparent border-neon-yellow hover:bg-neon-yellow hover:text-bg-dark min-h-[44px]"
+            aria-label="Start Scavenger Hunt"
+          >
+            ▶ HUNT ◀
+          </button>
+          <button
             onClick={onStartCardDeck}
-            className="flex-1 font-bold py-4 px-6 text-lg md:text-xl active:scale-95 transition-all duration-150 uppercase border-4 text-neon-cyan bg-transparent border-neon-cyan hover:bg-neon-cyan hover:text-bg-dark min-h-[44px]"
+            className="font-bold py-4 px-6 text-lg md:text-xl active:scale-95 transition-all duration-150 uppercase border-4 text-neon-cyan bg-transparent border-neon-cyan hover:bg-neon-cyan hover:text-bg-dark min-h-[44px]"
             aria-label="Start Card Deck Shuffle"
           >
             ▶ CARDS ◀
