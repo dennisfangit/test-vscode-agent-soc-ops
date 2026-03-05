@@ -56,7 +56,7 @@
     }
   }
 
-  /* Scanline effect */
+  /* Scanline overlay */
   body::before {
     content: '';
     position: fixed;
@@ -77,110 +77,39 @@
 }
 
 @layer components {
-  /* Button hover glitch — used by .neon-glow-button:hover */
-  @keyframes arcade-glitch {
-    0% {
-      transform: skewX(0deg);
-      opacity: 1;
-    }
-    33% {
-      transform: skewX(-2.5deg) scaleX(1.01);
-      opacity: 0.9;
-    }
-    66% {
-      transform: skewX(2.5deg) scaleX(0.99);
-      opacity: 0.95;
-    }
-    100% {
-      transform: skewX(0deg);
-      opacity: 1;
-    }
-  }
-
-  /* Triple-layer neon glow for hero title (cyan inner, magenta mid, yellow outer) */
-  .neon-glow-title-lg {
-    text-shadow:
-      0 0 7px #fff,
-      0 0 10px #fff,
-      0 0 21px #fff,
-      0 0 42px #00ffff,
-      0 0 82px #00ffff,
-      0 0 92px #ff00ff,
-      0 0 102px #ff00ff,
-      0 0 151px #ffff00;
-  }
-
-  /* Single cyan glow for headings and tagline */
+  /* Double-layer cyan/magenta title glow */
   .neon-glow-text {
+    color: var(--color-neon-cyan);
     text-shadow:
-      0 0 7px #00ffff,
-      0 0 15px #00ffff,
-      0 0 30px rgba(0, 255, 255, 0.5);
+      0 0 20px var(--color-neon-cyan),
+      0 0 40px var(--color-neon-magenta);
+    letter-spacing: 4px;
   }
 
-  /* Button glow: magenta edge + yellow inner highlight */
-  .neon-glow-button {
-    box-shadow:
-      0 0 20px #ff00ff,
-      0 0 40px rgba(255, 0, 255, 0.5),
-      inset 0 0 20px rgba(255, 255, 0, 0.15);
-    animation: arcade-pulse 2s ease-in-out infinite;
-    transition: box-shadow 0.2s ease, transform 0.15s ease;
+  /* Subtle horizontal rule between sections */
+  .section-divider {
+    border-bottom: 1px solid rgba(0, 255, 255, 0.3);
   }
 
-  .neon-glow-button:hover {
-    box-shadow:
-      0 0 40px #ff00ff,
-      0 0 80px rgba(255, 0, 255, 0.7),
-      0 0 120px rgba(255, 0, 255, 0.3),
-      inset 0 0 30px rgba(255, 255, 0, 0.3);
-    animation: arcade-pulse 2s ease-in-out infinite, arcade-glitch 0.15s steps(2, end) infinite;
+  /* Cyan neon border box (e.g. rules card) */
+  .neon-border-box {
+    border: 4px solid var(--color-neon-cyan);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
   }
 
-  /* Stacked box-shadow for 3D arcade cabinet border.
-     NOTE: The box-shadow offsets (8px gap, 12px outer ring) are calibrated
-     for the 4px solid border defined here — do not change border-width
-     without also adjusting the shadow spread values. */
-  .arcade-cabinet-border {
-    border: 4px solid #00ffff;
-    box-shadow:
-      0 0 0 8px #1a1a2e,
-      0 0 0 12px #ff00ff,
-      0 0 30px rgba(0, 255, 255, 0.5),
-      0 0 60px rgba(255, 0, 255, 0.25),
-      inset 0 0 40px rgba(0, 255, 255, 0.04);
+  /* Magenta play button glow */
+  .neon-play-button {
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.8);
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
   }
 
-  /* Scanline CRT overlay — semi-transparent horizontal bands, opacity ~25-30% */
-  .arcade-scanlines {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 50;
-    background-image: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0, 0, 0, 0.12) 2px,
-      rgba(0, 0, 0, 0.12) 4px
-    );
-    opacity: 0.3;
+  .neon-play-button:hover {
+    box-shadow: 0 0 40px rgba(255, 0, 255, 1);
   }
 
-  /* Radial gradient overlay behind hero section */
-  .hero-gradient {
-    background: radial-gradient(
-      ellipse at center,
-      rgba(0, 255, 255, 0.1) 0%,
-      rgba(255, 0, 255, 0.05) 50%,
-      transparent 70%
-    );
-  }
-
-  /* Ambient background glow for full-page atmosphere */
-  .arcade-ambient-bg {
-    background:
-      radial-gradient(ellipse at 20% 20%, rgba(0, 255, 255, 0.07) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 80%, rgba(255, 0, 255, 0.07) 0%, transparent 50%);
+  /* Subtle cyan glow on rule list items */
+  .rule-text-glow {
+    text-shadow: 0 0 5px var(--color-neon-cyan);
   }
 }
