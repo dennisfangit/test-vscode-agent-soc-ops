@@ -1,21 +1,134 @@
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 @theme {
-  --color-accent: #2563eb;
-  --color-accent-light: #3b82f6;
-  --color-marked: #dcfce7;
-  --color-marked-border: #22c55e;
-  --color-bingo: #fbbf24;
+  --color-arcade-bg: #0a0e27;
+  --color-arcade-dark: #1a1f3a;
+  --color-neon-pink: #ff006e;
+  --color-neon-cyan: #00f5ff;
+  --color-neon-yellow: #fffd38;
+  --color-neon-purple: #b537f2;
+  --color-marked: #00f5ff;
+  --color-marked-border: #ff006e;
+  --color-bingo: #fffd38;
+  --color-accent: #ff006e;
 }
 
-html,
-body,
-#root {
-  height: 100%;
-}
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
 
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
-  -webkit-tap-highlight-color: transparent;
+  body {
+    margin: 0;
+    font-family: 'Press Start 2P', cursive;
+    background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #2d1b4e 100%);
+    color: #00f5ff;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+
+  /* Pixel-perfect pixel borders */
+  .pixel-border {
+    border: 4px solid;
+    border-image-slice: 1;
+    image-rendering: pixelated;
+  }
+
+  /* Neon glow effects */
+  .neon-glow {
+    text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+
+  .neon-pink { color: #ff006e; }
+  .neon-cyan { color: #00f5ff; }
+  .neon-yellow { color: #fffd38; }
+  .neon-purple { color: #b537f2; }
+
+  /* Arcade button pulse animation */
+  @keyframes arcade-pulse {
+    0%, 100% {
+      box-shadow: 0 0 10px rgba(255, 0, 110, 0.6), inset 0 0 10px rgba(255, 0, 110, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(255, 0, 110, 1), inset 0 0 15px rgba(255, 0, 110, 0.6);
+    }
+  }
+
+  @keyframes arcade-flicker {
+    0%, 18%, 22%, 25%, 54%, 56%, 100% {
+      opacity: 1;
+    }
+    19%, 24%, 55% {
+      opacity: 0.8;
+    }
+  }
+
+  @keyframes arcade-scan {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(100%);
+    }
+  }
+
+  @keyframes arcade-neon-glow {
+    0%, 100% {
+      text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+    }
+    50% {
+      text-shadow: 0 0 20px currentColor, 0 0 40px currentColor, 0 0 60px currentColor;
+    }
+  }
+
+  /* CRT screen effect */
+  @keyframes crt-flicker {
+    0% {
+      text-shadow: -2px 0 #ff006e, 2px 0 #00f5ff;
+    }
+    20% {
+      text-shadow: -2px 0 #ff006e, 2px 0 #00f5ff;
+    }
+    21% {
+      text-shadow: 2px 0 #ff006e, -2px 0 #00f5ff;
+    }
+    40% {
+      text-shadow: 2px 0 #ff006e, -2px 0 #00f5ff;
+    }
+    41% {
+      text-shadow: -2px 0 #ff006e, 2px 0 #00f5ff;
+    }
+    60% {
+      text-shadow: -2px 0 #ff006e, 2px 0 #00f5ff;
+    }
+    61% {
+      text-shadow: 2px 0 #ff006e, -2px 0 #00f5ff;
+    }
+    100% {
+      text-shadow: 2px 0 #ff006e, -2px 0 #00f5ff;
+    }
+  }
+
+  /* Scanline effect */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+    z-index: 9999;
+  }
 }
