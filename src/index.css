@@ -1,5 +1,5 @@
-@import 'tailwindcss';
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import 'tailwindcss';
 
 @theme {
   --color-bg-dark: #1a1a2e;
@@ -26,24 +26,6 @@
     overflow-x: hidden;
   }
 
-  /* Arcade scanline effect */
-  .arcade-scanlines {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    background-image: repeating-linear-gradient(
-      0deg,
-      rgba(255, 0, 255, 0.03) 0px,
-      rgba(255, 0, 255, 0.03) 1px,
-      transparent 1px,
-      transparent 2px
-    );
-    z-index: -1;
-  }
-
   /* Neon text glow */
   .neon-glow {
     text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
@@ -55,14 +37,13 @@
     image-rendering: crisp-edges;
   }
 
-
   /* Arcade button pulse animation */
   @keyframes arcade-pulse {
     0%, 100% {
       filter: brightness(1);
     }
     50% {
-      filter: brightness(1.2);
+      filter: brightness(1.25);
     }
   }
 
@@ -92,5 +73,114 @@
       transparent 2px
     );
     z-index: 9999;
+  }
+}
+
+@layer components {
+  /* Button hover glitch — used by .neon-glow-button:hover */
+  @keyframes arcade-glitch {
+    0% {
+      transform: skewX(0deg);
+      opacity: 1;
+    }
+    33% {
+      transform: skewX(-2.5deg) scaleX(1.01);
+      opacity: 0.9;
+    }
+    66% {
+      transform: skewX(2.5deg) scaleX(0.99);
+      opacity: 0.95;
+    }
+    100% {
+      transform: skewX(0deg);
+      opacity: 1;
+    }
+  }
+
+  /* Triple-layer neon glow for hero title (cyan inner, magenta mid, yellow outer) */
+  .neon-glow-title-lg {
+    text-shadow:
+      0 0 7px #fff,
+      0 0 10px #fff,
+      0 0 21px #fff,
+      0 0 42px #00ffff,
+      0 0 82px #00ffff,
+      0 0 92px #ff00ff,
+      0 0 102px #ff00ff,
+      0 0 151px #ffff00;
+  }
+
+  /* Single cyan glow for headings and tagline */
+  .neon-glow-text {
+    text-shadow:
+      0 0 7px #00ffff,
+      0 0 15px #00ffff,
+      0 0 30px rgba(0, 255, 255, 0.5);
+  }
+
+  /* Button glow: magenta edge + yellow inner highlight */
+  .neon-glow-button {
+    box-shadow:
+      0 0 20px #ff00ff,
+      0 0 40px rgba(255, 0, 255, 0.5),
+      inset 0 0 20px rgba(255, 255, 0, 0.15);
+    animation: arcade-pulse 2s ease-in-out infinite;
+    transition: box-shadow 0.2s ease, transform 0.15s ease;
+  }
+
+  .neon-glow-button:hover {
+    box-shadow:
+      0 0 40px #ff00ff,
+      0 0 80px rgba(255, 0, 255, 0.7),
+      0 0 120px rgba(255, 0, 255, 0.3),
+      inset 0 0 30px rgba(255, 255, 0, 0.3);
+    animation: arcade-pulse 2s ease-in-out infinite, arcade-glitch 0.15s steps(2, end) infinite;
+  }
+
+  /* Stacked box-shadow for 3D arcade cabinet border.
+     NOTE: The box-shadow offsets (8px gap, 12px outer ring) are calibrated
+     for the 4px solid border defined here — do not change border-width
+     without also adjusting the shadow spread values. */
+  .arcade-cabinet-border {
+    border: 4px solid #00ffff;
+    box-shadow:
+      0 0 0 8px #1a1a2e,
+      0 0 0 12px #ff00ff,
+      0 0 30px rgba(0, 255, 255, 0.5),
+      0 0 60px rgba(255, 0, 255, 0.25),
+      inset 0 0 40px rgba(0, 255, 255, 0.04);
+  }
+
+  /* Scanline CRT overlay — semi-transparent horizontal bands, opacity ~25-30% */
+  .arcade-scanlines {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.12) 2px,
+      rgba(0, 0, 0, 0.12) 4px
+    );
+    opacity: 0.3;
+  }
+
+  /* Radial gradient overlay behind hero section */
+  .hero-gradient {
+    background: radial-gradient(
+      ellipse at center,
+      rgba(0, 255, 255, 0.1) 0%,
+      rgba(255, 0, 255, 0.05) 50%,
+      transparent 70%
+    );
+  }
+
+  /* Ambient background glow for full-page atmosphere */
+  .arcade-ambient-bg {
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(0, 255, 255, 0.07) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(255, 0, 255, 0.07) 0%, transparent 50%);
   }
 }
