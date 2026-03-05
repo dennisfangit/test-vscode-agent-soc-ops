@@ -1,89 +1,92 @@
+import { useState } from 'react';
+
 interface StartScreenProps {
   onStart: () => void;
 }
 
 export function StartScreen({ onStart }: StartScreenProps) {
+  const [rulesExpanded, setRulesExpanded] = useState(false);
+  const [flavorVisible, setFlavorVisible] = useState(false);
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-full p-6 bg-bg-dark relative overflow-hidden">
-      <div className="text-center max-w-xl z-10 relative">
-        {/* Title */}
-        <h1 
-          className="text-6xl font-bold text-center mb-2"
-          style={{
-            color: '#00ffff',
-            textShadow: '0 0 20px #00ffff, 0 0 40px #00ffff',
-            letterSpacing: '4px',
-            lineHeight: '1.2',
-            fontFamily: "'Press Start 2P', monospace"
-          }}
-        >
-          SOC OPS
-        </h1>
+    <div className="flex flex-col items-center justify-center min-h-full p-4 md:p-6 bg-bg-dark">
+      <div className="w-full max-w-xl">
 
-        {/* Subtitle */}
-        <p 
-          className="text-2xl font-bold mb-12"
-          style={{
-            color: '#ff00ff',
-            textShadow: '0 0 10px #ff00ff'
-          }}
-        >
-          ARCADE BINGO
-        </p>
-
-        {/* How to play box */}
-        <div 
-          className="bg-bg-dark border-4 p-8 mb-12 text-left"
-          style={{
-            borderColor: '#00ffff',
-            boxShadow: '0 0 20px rgba(0, 255, 255, 0.5)'
-          }}
-        >
-          <h2 
-            className="font-bold mb-4 text-xl"
-            style={{
-              color: '#ffff00',
-              textShadow: '0 0 10px #ffff00'
-            }}
-          >
-            &gt; HOW TO PLAY
-          </h2>
-          <ul className="text-left space-y-3">
-            <li style={{ color: '#ffffff', textShadow: '0 0 5px #00ffff' }}>
-              ▸ FIND people who match
-            </li>
-            <li style={{ color: '#ffffff', textShadow: '0 0 5px #00ffff' }}>
-              ▸ TAP squares when matched
-            </li>
-            <li style={{ color: '#ffffff', textShadow: '0 0 5px #00ffff' }}>
-              ▸ GET 5 IN A ROW TO WIN!
-            </li>
-          </ul>
+        {/* ── Hero ── */}
+        <div className="text-center mb-6">
+          <h1 className="text-5xl md:text-6xl font-bold neon-glow-text mb-3">
+            SOC OPS
+          </h1>
+          <p className="text-sm font-bold text-neon-cyan neon-glow">
+            ARCADE BINGO
+          </p>
         </div>
 
-        {/* Start button */}
+        <div className="section-divider mb-5" />
+
+        {/* ── Flavor Text ── hidden on mobile unless toggled; always on md+ ── */}
+        <div className="mb-5">
+          <button
+            className="md:hidden w-full text-left text-xs text-neon-cyan font-bold py-2 uppercase tracking-wider min-h-[44px]"
+            onClick={() => setFlavorVisible(!flavorVisible)}
+            aria-expanded={flavorVisible}
+          >
+            {flavorVisible ? '▲ HIDE INFO' : '▼ SHOW INFO'}
+          </button>
+          <div
+            className={`${flavorVisible ? 'block' : 'hidden'} md:block transition-all duration-300`}
+          >
+            <p className="text-xs text-neon-cyan font-bold leading-6 py-2">
+              Join players discovering shared passions—bikes to work, speaks 3+
+              languages, caught a wild Pokémon. Find your people, mark your
+              squares, claim the grid.
+            </p>
+          </div>
+        </div>
+
+        <div className="section-divider mb-5" />
+
+        {/* ── Accordion Rules ── collapsed on mobile, expanded on md+ ── */}
+        <div className="neon-border-box mb-6">
+          <button
+            onClick={() => setRulesExpanded(!rulesExpanded)}
+            className="w-full flex items-center justify-between px-6 py-4 font-bold text-neon-yellow uppercase text-sm min-h-[44px]"
+            aria-expanded={rulesExpanded}
+          >
+            <span>&gt; HOW TO PLAY</span>
+            <span
+              className={`md:hidden text-neon-cyan transition-transform duration-300 ${rulesExpanded ? 'rotate-180' : 'rotate-0'}`}
+              aria-hidden="true"
+            >
+              ↓
+            </span>
+          </button>
+          <div
+            className={`${rulesExpanded ? 'block' : 'hidden'} md:block transition-all duration-300 overflow-hidden`}
+          >
+            <ul className="px-6 pb-5 space-y-3">
+              <li className="text-text-primary rule-text-glow text-xs font-bold">
+                ▸ FIND people who match
+              </li>
+              <li className="text-text-primary rule-text-glow text-xs font-bold">
+                ▸ TAP squares when matched
+              </li>
+              <li className="text-text-primary rule-text-glow text-xs font-bold">
+                ▸ GET 5 IN A ROW TO WIN!
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* ── Play Button ── */}
         <button
           onClick={onStart}
-          className="w-full font-bold py-4 px-8 text-2xl active:scale-95 transition-transform uppercase border-4"
-          style={{
-            color: '#1a1a2e',
-            backgroundColor: '#ff00ff',
-            borderColor: '#ffff00',
-            boxShadow: '0 0 20px rgba(255, 0, 255, 0.8)',
-            textShadow: '0 0 5px rgba(0, 0, 0, 0.5)',
-            cursor: 'pointer',
-            fontFamily: "'Press Start 2P', monospace"
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.boxShadow = '0 0 40px rgba(255, 0, 255, 1)';
-            e.currentTarget.style.borderColor = '#ffff00';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.boxShadow = '0 0 20px rgba(255, 0, 255, 0.8)';
-          }}
+          className="w-full font-bold py-4 px-8 text-xl md:text-2xl active:scale-95 transition-all duration-150 uppercase border-4 text-bg-dark bg-neon-magenta border-neon-yellow neon-play-button min-h-[44px]"
+          aria-label="Start game"
         >
           ▶ START ◀
         </button>
+
       </div>
     </div>
   );
