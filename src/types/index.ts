@@ -13,4 +13,10 @@ export interface BingoLine {
   squares: number[];
 }
 
-export type GameState = 'start' | 'playing' | 'bingo';
+export type GameState = 'start' | 'playing' | 'bingo' | 'card-deck';
+
+export interface CardDeckState {
+  currentCardIndex: number;
+  usedCards: Set<number>;
+  cardHistory: number[];
+}

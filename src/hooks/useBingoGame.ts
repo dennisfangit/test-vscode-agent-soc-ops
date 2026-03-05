@@ -6,6 +6,7 @@ import {
   checkBingo,
   getWinningSquareIds,
 } from '../utils/bingoLogic';
+import { questions } from '../data/questions';
 
 export interface BingoGameState {
   gameState: GameState;
@@ -13,6 +14,7 @@ export interface BingoGameState {
   winningLine: BingoLine | null;
   winningSquareIds: Set<number>;
   showBingoModal: boolean;
+  currentCardIndex: number;
 }
 
 export interface BingoGameActions {
@@ -20,6 +22,8 @@ export interface BingoGameActions {
   handleSquareClick: (squareId: number) => void;
   resetGame: () => void;
   dismissModal: () => void;
+  startCardDeck: () => void;
+  drawCard: () => void;
 }
 
 const STORAGE_KEY = 'bingo-game-state';
@@ -43,7 +47,7 @@ function validateStoredData(data: unknown): data is StoredGameData {
     return false;
   }
   
-  if (typeof obj.gameState !== 'string' || !['start', 'playing', 'bingo'].includes(obj.gameState)) {
+  if (typeof obj.gameState !== 'string' || !['start', 'playing', 'bingo', 'card-deck'].includes(obj.gameState)) {
     return false;
   }
   
@@ -150,6 +154,7 @@ export function useBingoGame(): BingoGameState & BingoGameActions {
     () => loadedState?.winningLine || null
   );
   const [showBingoModal, setShowBingoModal] = useState(false);
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
   const winningSquareIds = useMemo(
     () => getWinningSquareIds(winningLine),
@@ -197,15 +202,27 @@ export function useBingoGame(): BingoGameState & BingoGameActions {
     setShowBingoModal(false);
   }, []);
 
+  const startCardDeck = useCallback(() => {
+    setCurrentCardIndex(0);
+    setGameState('card-deck');
+  }, []);
+
+  const drawCard = useCallback(() => {
+    setCurrentCardIndex((prev) => (prev + 1) % questions.length);
+  }, []);
+
   return {
     gameState,
     board,
     winningLine,
     winningSquareIds,
     showBingoModal,
+    currentCardIndex,
     startGame,
     handleSquareClick,
     resetGame,
     dismissModal,
+    startCardDeck,
+    drawCard,
   };
 }

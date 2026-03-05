@@ -1,10 +1,11 @@
 import { useState } from 'react';
 
 interface StartScreenProps {
-  onStart: () => void;
+  onStartBingo: () => void;
+  onStartCardDeck: () => void;
 }
 
-export function StartScreen({ onStart }: StartScreenProps) {
+export function StartScreen({ onStartBingo, onStartCardDeck }: StartScreenProps) {
   const [rulesExpanded, setRulesExpanded] = useState(false);
   const [flavorVisible, setFlavorVisible] = useState(false);
 
@@ -78,14 +79,23 @@ export function StartScreen({ onStart }: StartScreenProps) {
           </div>
         </div>
 
-        {/* ── Play Button ── */}
-        <button
-          onClick={onStart}
-          className="w-full font-bold py-4 px-8 text-xl md:text-2xl active:scale-95 transition-all duration-150 uppercase border-4 text-bg-dark bg-neon-magenta border-neon-yellow neon-play-button min-h-[44px]"
-          aria-label="Start game"
-        >
-          ▶ START ◀
-        </button>
+        {/* ── Play Buttons ── */}
+        <div className="flex gap-3">
+          <button
+            onClick={onStartBingo}
+            className="flex-1 font-bold py-4 px-6 text-lg md:text-xl active:scale-95 transition-all duration-150 uppercase border-4 text-bg-dark bg-neon-magenta border-neon-yellow neon-play-button min-h-[44px]"
+            aria-label="Start Bingo game"
+          >
+            ▶ BINGO ◀
+          </button>
+          <button
+            onClick={onStartCardDeck}
+            className="flex-1 font-bold py-4 px-6 text-lg md:text-xl active:scale-95 transition-all duration-150 uppercase border-4 text-neon-cyan bg-transparent border-neon-cyan hover:bg-neon-cyan hover:text-bg-dark min-h-[44px]"
+            aria-label="Start Card Deck Shuffle"
+          >
+            ▶ CARDS ◀
+          </button>
+        </div>
 
       </div>
     </div>

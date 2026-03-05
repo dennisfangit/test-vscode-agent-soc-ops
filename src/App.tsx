@@ -1,6 +1,7 @@
 import { useBingoGame } from './hooks/useBingoGame';
 import { StartScreen } from './components/StartScreen';
 import { GameScreen } from './components/GameScreen';
+import { CardDeck } from './components/CardDeck';
 import { BingoModal } from './components/BingoModal';
 
 function App() {
@@ -9,14 +10,21 @@ function App() {
     board,
     winningSquareIds,
     showBingoModal,
+    currentCardIndex,
     startGame,
+    startCardDeck,
+    drawCard,
     handleSquareClick,
     resetGame,
     dismissModal,
   } = useBingoGame();
 
   if (gameState === 'start') {
-    return <StartScreen onStart={startGame} />;
+    return <StartScreen onStartBingo={startGame} onStartCardDeck={startCardDeck} />;
+  }
+
+  if (gameState === 'card-deck') {
+    return <CardDeck currentCardIndex={currentCardIndex} onDrawCard={drawCard} onReset={resetGame} />;
   }
 
   return (
