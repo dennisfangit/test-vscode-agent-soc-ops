@@ -1,10 +1,12 @@
 import { useState } from 'react';
 
 interface StartScreenProps {
-  onStart: () => void;
+  onStartBingo: () => void;
+  onStartScavengerHunt: () => void;
+  onStartCardDeck: () => void;
 }
 
-export function StartScreen({ onStart }: StartScreenProps) {
+export function StartScreen({ onStartBingo, onStartScavengerHunt, onStartCardDeck }: StartScreenProps) {
   const [rulesExpanded, setRulesExpanded] = useState(false);
   const [flavorVisible, setFlavorVisible] = useState(false);
 
@@ -78,14 +80,30 @@ export function StartScreen({ onStart }: StartScreenProps) {
           </div>
         </div>
 
-        {/* ── Play Button ── */}
-        <button
-          onClick={onStart}
-          className="w-full font-bold py-4 px-8 text-xl md:text-2xl active:scale-95 transition-all duration-150 uppercase border-4 text-bg-dark bg-neon-magenta border-neon-yellow neon-play-button min-h-[44px]"
-          aria-label="Start game"
-        >
-          ▶ START ◀
-        </button>
+        {/* ── Play Buttons ── */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <button
+            onClick={onStartBingo}
+            className="font-bold py-4 px-6 text-lg md:text-xl active:scale-95 transition-all duration-150 uppercase border-4 text-bg-dark bg-neon-magenta border-neon-yellow neon-play-button min-h-[44px]"
+            aria-label="Start Bingo game"
+          >
+            ▶ BINGO ◀
+          </button>
+          <button
+            onClick={onStartScavengerHunt}
+            className="font-bold py-4 px-6 text-lg md:text-xl active:scale-95 transition-all duration-150 uppercase border-4 text-neon-yellow bg-transparent border-neon-yellow hover:bg-neon-yellow hover:text-bg-dark min-h-[44px]"
+            aria-label="Start Scavenger Hunt"
+          >
+            ▶ HUNT ◀
+          </button>
+          <button
+            onClick={onStartCardDeck}
+            className="font-bold py-4 px-6 text-lg md:text-xl active:scale-95 transition-all duration-150 uppercase border-4 text-neon-cyan bg-transparent border-neon-cyan hover:bg-neon-cyan hover:text-bg-dark min-h-[44px]"
+            aria-label="Start Card Deck Shuffle"
+          >
+            ▶ CARDS ◀
+          </button>
+        </div>
 
       </div>
     </div>
