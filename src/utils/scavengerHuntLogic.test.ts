@@ -139,7 +139,7 @@ describe('scavengerHuntLogic', () => {
         { id: 5, text: 'Q6', isCompleted: false },
       ];
       const progress = calculateProgress(list);
-      expect(progress).toBeCloseTo(33.33, 1);
+      expect(progress).toBe(33);
     });
 
     it('should return integer percentage', () => {
