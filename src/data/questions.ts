@@ -1,4 +1,34 @@
 export const questions: string[] = [
+  "has a playlist for every mood",
+  "has been to a live music concert",
+  "has visited an art gallery or museum",
+  "doodles when bored or thinking",
+  "has a favorite color with a specific shade name",
+  "has a song that always cheers them up",
+  "has taken a photo they're proud of",
+  "has decorated their own living space",
+  "can hum a tv show or movie theme song",
+  "has a go-to creative hobby",
+  "has played a musical instrument",
+  "has made something with their hands",
+  "has a design pet peeve",
+  "can name a typeface by sight",
+  "has created something and posted it online",
+  "has rearranged furniture purely for aesthetics",
+  "knows what a color wheel is",
+  "has a personal aesthetic or visual style",
+  "has performed in front of an audience",
+  "has sold or gifted something they created",
+  "can explain what negative space means in design",
+  "has written or recorded an original song",
+  "can identify a famous painting's artist",
+  "has collaborated on a creative project",
+];
+
+export const FREE_SPACE = "FREE SPACE";
+
+/* OLD NETWORKING QUESTIONS ARCHIVED BELOW
+const _oldQuestions = [
   "bikes to work",
   "has lived in another country",
   "has a pet",
@@ -24,5 +54,4 @@ export const questions: string[] = [
   "has read a book this month",
   "knows sign language",
 ];
-
-export const FREE_SPACE = "FREE SPACE";
+*/
